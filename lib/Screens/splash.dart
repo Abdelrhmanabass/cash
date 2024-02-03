@@ -26,7 +26,7 @@ class _MySplachState extends State<MySplach> {
   Widget build(BuildContext context) {
     return   Scaffold(
         body: Center(
-          child: Image.asset(Assets.imagesStart),
+          child: Image.asset(Assets.logo),
         ),
       );
   }

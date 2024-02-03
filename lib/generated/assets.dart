@@ -5,6 +5,7 @@ class Assets {
   static const String fontsBebasNeueRegular = 'assets/fonts/BebasNeue-Regular.ttf';
   static const String generatedAssets = 'lib/generated/assets.dart';
   static const String imagesStart = 'assets/images/start.jpg';
+  static const String logo = 'assets/images/logo.gif';
   static const String libGeneratedAssets = 'lib/generated/assets.dart';
   static const String libMain = 'lib/main.dart';
   static const String routesAppRoute = 'lib/core/routes/app_route.dart';

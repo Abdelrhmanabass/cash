@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:demo/Screens/result.dart';
 import 'package:flutter/material.dart';
-import 'package:text_to_speech/text_to_speech.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class Hello extends StatefulWidget {
   const Hello({super.key});
@@ -9,28 +13,31 @@ class Hello extends StatefulWidget {
 }
 
 class _HelloState extends State<Hello> {
-  String maintext = "Welcome to the Know My Money program. "
-      "The main goal of the program is to help blind people recognize their paper currencies and help them with paper transactions , "
-      " in addition to the advantage of identifying whether the currency is fake or real. We hope you enjoy with us.";
 
-  TextToSpeech tts = TextToSpeech();
-
-  double volume = 1; // Range: 0-1
-  double rate = 1.0; // Range: 0-2
-  double pitch = 1.0; // Range: 0-2
-
-  speak(String text) async {
-    await tts.setLanguage('en-US');
-    await tts.setVolume(volume);
-    await tts.setRate(rate);
-    await tts.setPitch(pitch);
-    await tts.speak(text);
-  }
+  String maintext =
+      " Our CASHY Application will assist you in detecting ,"
+      " identifying and counting your money ,"
+      " it also tells you whether the currency is fake or not ."
+      " All you have to do is open the camera and scan your money or open your gallery and select a photo of the currency.";
+  final player = AudioPlayer();
 
   @override
   void initState() {
-     tts.speak(maintext);
     super.initState();
+    player.play(AssetSource('audios/Cashy.mp4'));
+  }
+
+  late File _image;
+
+
+  Future<void> pickImage(ImageSource type) async {
+
+    var image = await ImagePicker().pickImage(source: type);
+    if(image != null) {
+      _image = File(image.path);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => result(_image)));
+
+    }
   }
 
   @override
@@ -39,8 +46,11 @@ class _HelloState extends State<Hello> {
       backgroundColor: const Color(0xff080210),
       appBar: AppBar(
         leading: Container(),
-        title: const Text('Know My Money'),
-        backgroundColor: Colors.blueGrey[900],
+        title: const Text(
+          'Cashy',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
+        ),
+        backgroundColor: Colors.blueGrey[100],
       ),
       body: Container(
         alignment: Alignment.center,
@@ -52,7 +62,7 @@ class _HelloState extends State<Hello> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'What is Know My Money ?',
+                    'What is Cashy ?',
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
@@ -67,16 +77,60 @@ class _HelloState extends State<Hello> {
                 ],
               ),
               const Expanded(child: SizedBox()),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: FloatingActionButton.extended(
-                  onPressed: () {
-                    tts.stop();
-                  },
-                  backgroundColor: Colors.green,
-                  label: Text('Skip'),
-                  icon: const Icon(Icons.skip_next),
-                ),
+              Row(
+                children: [
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: FloatingActionButton.extended(
+                      onPressed: () async {
+                        player.stop();
+                        await pickImage(ImageSource.camera);
+                      },
+                      backgroundColor: Colors.green,
+                      label: const Text(
+                        'Skip',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      icon: const Icon(Icons.skip_next),
+                    ),
+                  ),
+                  const Expanded(child: SizedBox()),
+                  Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: FloatingActionButton.extended(
+                          onPressed: () {
+                            player.stop();
+                            pickImage(ImageSource.camera);
+                          },
+                          backgroundColor: Colors.green,
+                          label: const Text(
+                            'camera',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          icon: const Icon(Icons.camera),
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: FloatingActionButton.extended(
+                          onPressed: () {
+                            player.stop();
+                            pickImage(ImageSource.gallery);
+                          },
+                          backgroundColor: Colors.green,
+                          label: const Text(
+                            'gallery',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          icon: const Icon(Icons.browse_gallery),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
