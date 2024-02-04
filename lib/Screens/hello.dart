@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+import 'package:tflite/tflite.dart';
+
 class Hello extends StatefulWidget {
   const Hello({super.key});
 
@@ -17,24 +19,54 @@ class _HelloState extends State<Hello> {
       " identifying and counting your money ,"
       " it also tells you whether the currency is fake or not ."
       " All you have to do is open the camera and scan your money or open your gallery and select a photo of the currency.";
+
   final player = AudioPlayer();
 
   @override
+  void dispose() {
+    Tflite.close();
+    super.dispose();
+  }
+
+  @override
   void initState() {
+    loadModel();
     super.initState();
     //player.play(AssetSource('audios/Cashy.mp4'));
   }
 
   late File _image;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  List _predictions = [];
+
 
   Future<void> pickImage(ImageSource type) async {
     var image = await ImagePicker().pickImage(source: type);
     if (image != null) {
       _image = File(image.path);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => result(_image)));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => result(_image, _predictions)));
     }
+    detectImage(_image);
+  }
+
+  Future<void> loadModel() async {
+    await Tflite.loadModel(
+      model: "assets/model.tflite",
+      labels: "assets/labels.txt",
+    );
+  }
+
+  detectImage(File image) async {
+    var output = await Tflite.runModelOnImage(
+      path: image.path,
+      numResults: 2,
+      threshold: 0.6,
+      imageMean: 127.5,
+      imageStd: 127.5,
+    );
+    setState(() {
+      _predictions = output!;
+    });
   }
 
   @override
@@ -51,8 +83,7 @@ class _HelloState extends State<Hello> {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 200.0),
-            child:
-            ListView(
+            child: ListView(
               children: const [
                 ListTile(
                   leading: Icon(Icons.home),
@@ -62,7 +93,7 @@ class _HelloState extends State<Hello> {
                   color: Colors.green, // Customize the color of the divider
                   thickness: 1,
                   indent: 40,
-                  endIndent: 40,// Adjust the thickness of the divider
+                  endIndent: 40, // Adjust the thickness of the divider
                 ),
                 ListTile(
                   leading: Icon(Icons.mic),
@@ -72,7 +103,7 @@ class _HelloState extends State<Hello> {
                   color: Colors.green, // Customize the color of the divider
                   thickness: 1,
                   indent: 40,
-                  endIndent: 40,// Adjust the thickness of the divider
+                  endIndent: 40, // Adjust the thickness of the divider
                 ),
                 ListTile(
                   leading: Icon(Icons.attach_money_rounded),
@@ -82,13 +113,12 @@ class _HelloState extends State<Hello> {
                   color: Colors.green, // Customize the color of the divider
                   thickness: 1,
                   indent: 40,
-                  endIndent: 40,// Adjust the thickness of the divider
+                  endIndent: 40, // Adjust the thickness of the divider
                 ),
               ],
             ),
           ),
-        ]
-        ),
+        ]),
       ),
       body: Stack(children: [
         Container(
@@ -96,84 +126,6 @@ class _HelloState extends State<Hello> {
             image: DecorationImage(
                 image: AssetImage('assets/images/Home.jpg'), fit: BoxFit.cover),
           ),
-          // Column(
-          //   children: [
-          //     Column(
-          //       crossAxisAlignment: CrossAxisAlignment.start,
-          //       children: [
-          //         const Text(
-          //           'What is Cashy ?',
-          //           style: TextStyle(
-          //             fontSize: 30,
-          //             fontWeight: FontWeight.bold,
-          //             color: Colors.white,
-          //           ),
-          //         ), //text title
-          //         const SizedBox(height: 40),
-          //         Text(maintext,
-          //             style: const TextStyle(
-          //                 fontSize: 18, color: Colors.white, height: 1.3)),
-          //         const SizedBox(height: 50),
-          //       ],
-          //     ),
-          //     const Expanded(child: SizedBox()),
-          //     Row(
-          //       children: [
-          //         Align(
-          //           alignment: Alignment.bottomRight,
-          //           child: FloatingActionButton.extended(
-          //             onPressed: () async {
-          //               player.stop();
-          //               await pickImage(ImageSource.camera);
-          //             },
-          //             backgroundColor: Colors.green,
-          //             label: const Text(
-          //               'Skip',
-          //               style: TextStyle(color: Colors.white),
-          //             ),
-          //             icon: const Icon(Icons.skip_next),
-          //           ),
-          //         ),
-          //         const Expanded(child: SizedBox()),
-          //         Column(
-          //           children: [
-          //             Align(
-          //               alignment: Alignment.bottomLeft,
-          //               child: FloatingActionButton.extended(
-          //                 onPressed: () {
-          //                   player.stop();
-          //                   pickImage(ImageSource.camera);
-          //                 },
-          //                 backgroundColor: Colors.green,
-          //                 label: const Text(
-          //                   'camera',
-          //                   style: TextStyle(color: Colors.white),
-          //                 ),
-          //                 icon: const Icon(Icons.camera),
-          //               ),
-          //             ),
-          //             const SizedBox(height: 5),
-          //             Align(
-          //               alignment: Alignment.bottomLeft,
-          //               child: FloatingActionButton.extended(
-          //                 onPressed: () {
-          //                   player.stop();
-          //                   pickImage(ImageSource.gallery);
-          //                 },
-          //                 backgroundColor: Colors.green,
-          //                 label: const Text(
-          //                   'gallery',
-          //                   style: TextStyle(color: Colors.white),
-          //                 ),
-          //                 icon: const Icon(Icons.browse_gallery),
-          //               ),
-          //             ),
-          //           ],
-          //         ),
-          //       ],
-          //     ),
-          //   ],
-          // ),
         ),
         Column(
           children: [
@@ -233,7 +185,62 @@ class _HelloState extends State<Hello> {
                   ),
                 ),
               ),
-            )
+            ),
+            Row(
+              children: [
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: FloatingActionButton.extended(
+                    onPressed: () async {
+                      player.stop();
+                      await pickImage(ImageSource.camera);
+                    },
+                    backgroundColor: Colors.green,
+                    label: const Text(
+                      'Skip',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    icon: const Icon(Icons.skip_next),
+                  ),
+                ),
+                const Expanded(child: SizedBox()),
+                Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: FloatingActionButton.extended(
+                        onPressed: () {
+                          player.stop();
+                          pickImage(ImageSource.camera);
+                        },
+                        backgroundColor: Colors.green,
+                        label: const Text(
+                          'camera',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        icon: const Icon(Icons.camera),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: FloatingActionButton.extended(
+                        onPressed: () {
+                          player.stop();
+                          pickImage(ImageSource.gallery);
+                        },
+                        backgroundColor: Colors.green,
+                        label: const Text(
+                          'gallery',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        icon: const Icon(Icons.browse_gallery),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ],
         ),
       ]),

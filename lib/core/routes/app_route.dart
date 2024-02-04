@@ -4,7 +4,7 @@ import '../../Screens/splash.dart';
 import '../../Screens/hello.dart';
 import 'dart:io';
 late File _image;
-
+List _predictions = [];
 final GoRouter router = GoRouter(routes: [
   GoRoute(
     path: "/",
@@ -18,7 +18,7 @@ final GoRouter router = GoRouter(routes: [
 
   GoRoute(
       path: "/camera",
-      builder: (context, state) => result(_image) ,
+      builder: (context, state) => result(_image,_predictions) ,
   )
 
 ]);

@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 
 class result extends StatefulWidget {
   late File _image;
-
-  result(File PickedImage, {super.key} )
+  List _predictions = [0];
+  result(File PickedImage, List _OutoutPrediction ,{super.key} )
   {
     _image = PickedImage ;
+    _predictions = _OutoutPrediction ;
   }
 
   @override
@@ -14,9 +15,7 @@ class result extends StatefulWidget {
 }
 
 class _resultState extends State<result> {
-
   bool loading= true;
-
   @override
 
   Widget build(BuildContext context) {
@@ -24,12 +23,17 @@ class _resultState extends State<result> {
       appBar: AppBar(
         title: const Text('Result'),
       ),
-      body: Center(
-        child: Container(
-          width: 500,
-          height: 500,
-          child: ImageWithProgressIndicator(imageFile: widget._image),
+      body: Column(
+        children: [
+          Center(
+          child: SizedBox(
+            width: 500,
+            height: 500,
+            child: ImageWithProgressIndicator(imageFile: widget._image),
+          ),
         ),
+          Text(widget._predictions.toString()),
+        ]
       ),
     );
   }
@@ -46,20 +50,20 @@ class ImageWithProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<File>(
-        future: Future<File>.delayed(Duration(seconds: 2), () => imageFile), // Replace this with your actual file loading process
+        future: Future<File>.delayed(const Duration(seconds: 2), () => imageFile), // Replace this with your actual file loading process
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.hasError) {
-            return Center(
+            return const Center(
               child: Text('Error loading image'),
             );
           } else if (snapshot.hasData) {
             return Image.file(snapshot.data!);      //for editing image here <<
           } else {
-            return Center(
+            return const Center(
               child: Text('No image data'),
             );
           }

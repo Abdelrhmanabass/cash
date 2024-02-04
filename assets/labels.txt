@@ -1,0 +1,6 @@
+1 100Egp
+2 10Egp
+3 200Egp
+4 20Egp
+5 50Egp
+6 5Egp
