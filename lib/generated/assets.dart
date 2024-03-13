@@ -2,14 +2,16 @@
 class Assets {
   Assets._();
 
+  static const String audiosCashy = 'assets/audios/Cashy.mp4';
   static const String fontsBebasNeueRegular = 'assets/fonts/BebasNeue-Regular.ttf';
-  static const String generatedAssets = 'lib/generated/assets.dart';
-  static const String imagesStart = 'assets/images/start.jpg';
-  static const String logo = 'assets/images/logo.gif';
-  static const String libGeneratedAssets = 'lib/generated/assets.dart';
-  static const String libMain = 'lib/main.dart';
-  static const String routesAppRoute = 'lib/core/routes/app_route.dart';
-  static const String screensHello = 'lib/Screens/hello.dart';
-  static const String screensSplash = 'lib/Screens/splash.dart';
+  static const String imagesHome = 'assets/images/Home.jpg';
+  static const String imagesLogo = 'assets/images/logo.gif';
+  static const String imagesLogoIcon = 'assets/images/logo_icon.gif';
+  static const String imagesMenu = 'assets/images/Menu.png';
+  static const String modelsBestInt8 = 'assets/models/best_int8.tflite';
+  static const String modelsCnn = 'assets/models/cnn.tflite';
+  static const String modelsIsaFINAL = 'assets/models/isaFINAL.txt';
+  static const String modelsLabels = 'assets/models/labels.txt';
+  static const String modelsYarb = 'assets/models/yarb.txt';
 
 }

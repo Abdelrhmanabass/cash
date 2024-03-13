@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'provider/SettingsProvider.dart';
 import 'core/routes/app_route.dart';
 
 main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const E3rfly());
+  runApp(
+      ChangeNotifierProvider(
+        create: (BuildContext context) => SettingsProvider(),
+        child: const E3rfly(),
+      )
+  );
 }
 
 
@@ -18,6 +25,7 @@ class _E3rflyState extends State<E3rfly> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router (
+      // navigatorKey:NavigationService.navigatorKey,
       debugShowCheckedModeBanner: false,
       routerConfig: router,
     );

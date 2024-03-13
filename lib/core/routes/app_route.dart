@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import '../../Screens/splash.dart';
 import '../../Screens/hello.dart';
 import 'dart:io';
+
+import '../../Screens/voice.dart';
 late File _image;
 List _predictions = [];
 final GoRouter router = GoRouter(routes: [
@@ -17,8 +19,13 @@ final GoRouter router = GoRouter(routes: [
   ),
 
   GoRoute(
-      path: "/camera",
+      path: "/result",
       builder: (context, state) => result(_image,_predictions) ,
+  ),
+
+  GoRoute(
+    path: "/Settings",
+    builder: (context, state) => const Setting() ,
   )
 
 ]);

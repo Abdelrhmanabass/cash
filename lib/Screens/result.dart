@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 class result extends StatefulWidget {
   late File _image;
-  List _predictions = [0];
-  result(File PickedImage, List _OutoutPrediction ,{super.key} )
+  var _result;
+  result(File PickedImage, var result ,{super.key} )
   {
     _image = PickedImage ;
-    _predictions = _OutoutPrediction ;
+    _result = result;
   }
 
   @override
@@ -32,7 +32,7 @@ class _resultState extends State<result> {
             child: ImageWithProgressIndicator(imageFile: widget._image),
           ),
         ),
-          Text(widget._predictions.toString()),
+          Text(widget._result),
         ]
       ),
     );

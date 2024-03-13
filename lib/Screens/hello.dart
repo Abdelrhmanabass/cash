@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
-
 import 'package:demo/Screens/result.dart';
+import 'package:demo/Screens/voice.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
-import 'package:tflite/tflite.dart';
+import '../provider/SettingsProvider.dart';
 
 class Hello extends StatefulWidget {
   const Hello({super.key});
@@ -15,58 +18,60 @@ class Hello extends StatefulWidget {
 }
 
 class _HelloState extends State<Hello> {
+
   String maintext = " Our CASHY Application will assist you in detecting ,"
       " identifying and counting your money ,"
       " it also tells you whether the currency is fake or not ."
       " All you have to do is open the camera and scan your money or open your gallery and select a photo of the currency.";
 
-  final player = AudioPlayer();
+  final AudioPlayer player = AudioPlayer();
+  late File _image;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  var body ;
+  late final getPickedGender = Provider.of<SettingsProvider>(context,listen: false).pickedGender;
+  late final getPickedLanguage = Provider.of<SettingsProvider>(context,listen: false).pickedLanguage;
 
-  @override
-  void dispose() {
-    Tflite.close();
-    super.dispose();
-  }
 
   @override
   void initState() {
-    loadModel();
     super.initState();
-    //player.play(AssetSource('audios/Cashy.mp4'));
+    if (getPickedLanguage == 'English' && getPickedGender == 'Female') {
+      player.play(AssetSource('audios/heba/Cashy-En.mp4'));
+    } else if (getPickedLanguage == 'English' && getPickedGender == 'Male') {
+      player.play(AssetSource('audios/amr/Cashy-En.mp4'));
+    }
   }
-
-  late File _image;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List _predictions = [];
 
 
   Future<void> pickImage(ImageSource type) async {
     var image = await ImagePicker().pickImage(source: type);
     if (image != null) {
       _image = File(image.path);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => result(_image, _predictions)));
+      Predict();
+      Navigator.push(context, MaterialPageRoute(builder: (context) => result(_image, body)));
+      print("result : ${body}");
+      //detectImage(_image);
     }
-    detectImage(_image);
   }
 
-  Future<void> loadModel() async {
-    await Tflite.loadModel(
-      model: "assets/model.tflite",
-      labels: "assets/labels.txt",
-    );
-  }
-
-  detectImage(File image) async {
-    var output = await Tflite.runModelOnImage(
-      path: image.path,
-      numResults: 2,
-      threshold: 0.6,
-      imageMean: 127.5,
-      imageStd: 127.5,
-    );
+  Future Predict () async
+  {
+    if(_image == null) return "No Selected Image Please Select Image First";
+    String base64 =  base64Encode(_image.readAsBytesSync());
+    print(base64);
+    Map<String, String> requestHeaders ={'Content-type': 'application/json',
+      'Accept': 'application/json',};
+    var  response = await http.put(Uri.parse("http://192.168.1.2:5000/api"),body: base64,headers:requestHeaders );
+    print(response.body);
     setState(() {
-      _predictions = output!;
+      body = response.body;
     });
+  }
+
+  @override
+  void dispose() {
+    player.dispose();
+    super.dispose();
   }
 
   @override
@@ -84,7 +89,7 @@ class _HelloState extends State<Hello> {
           Padding(
             padding: const EdgeInsets.only(top: 200.0),
             child: ListView(
-              children: const [
+              children:  [
                 ListTile(
                   leading: Icon(Icons.home),
                   title: Text('Home'),
@@ -97,7 +102,10 @@ class _HelloState extends State<Hello> {
                 ),
                 ListTile(
                   leading: Icon(Icons.mic),
-                  title: Text('Voice Settings'),
+                  title: Text(' Settings'),
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const Setting()));
+                  },
                 ),
                 Divider(
                   color: Colors.green, // Customize the color of the divider

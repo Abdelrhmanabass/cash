@@ -16,7 +16,7 @@ class _MySplachState extends State<MySplach> {
   void initState() {
     // TODO: implement initState
 
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 2), () {
         GoRouter.of(context).push('/hello');
     });
     super.initState();
@@ -26,7 +26,7 @@ class _MySplachState extends State<MySplach> {
   Widget build(BuildContext context) {
     return   Scaffold(
         body: Center(
-          child: Image.asset(Assets.logo),
+          child: Image.asset(Assets.imagesLogo),
         ),
       );
   }
