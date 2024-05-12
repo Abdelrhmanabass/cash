@@ -1,13 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class result extends StatefulWidget {
   late File _image;
-  var _result;
-  result(File PickedImage, var result ,{super.key} )
+
+  result(File PickedImage ,{super.key} )
   {
     _image = PickedImage ;
-    _result = result;
   }
 
   @override
@@ -15,7 +16,9 @@ class result extends StatefulWidget {
 }
 
 class _resultState extends State<result> {
+
   bool loading= true;
+
   @override
 
   Widget build(BuildContext context) {
@@ -23,46 +26,135 @@ class _resultState extends State<result> {
       appBar: AppBar(
         title: const Text('Result'),
       ),
-      body: Column(
-        children: [
-          Center(
-          child: SizedBox(
-            width: 500,
-            height: 500,
-            child: ImageWithProgressIndicator(imageFile: widget._image),
-          ),
-        ),
-          Text(widget._result),
-        ]
+      body: Center(
+          child: ImageWithProgressIndicator(imageFile: widget._image)
       ),
     );
   }
 }
 
-class ImageWithProgressIndicator extends StatelessWidget {
+class ImageWithProgressIndicator extends StatefulWidget {
   final File imageFile;
+  ImageWithProgressIndicator({Key? key, required this.imageFile,}) : super(key: key);
 
-  const ImageWithProgressIndicator({
-    Key? key,
-    required this.imageFile,
-  }) : super(key: key);
+  @override
+  State<ImageWithProgressIndicator> createState() => _ImageWithProgressIndicatorState();
+}
+
+class _ImageWithProgressIndicatorState extends State<ImageWithProgressIndicator> {
+  var result;
+  late String background ;
+
+  Future<void> uploadImage() async {
+    var image = widget.imageFile;
+    final request = http.MultipartRequest(
+      "POST",
+      Uri.parse("https://c183-197-133-51-219.ngrok-free.app/upload"),
+    );
+
+    final headers = {"Content-type": "multipart/form-data"};
+    request.headers.addAll(headers);
+
+
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        "image",
+        image.path,
+        filename: image.path.split("/").last,
+      ),
+    );
+
+    final response = await request.send();
+    final responseBody = await response.stream.bytesToString();
+    final resJson = jsonDecode(responseBody);
+    result = resJson;
+    print(resJson);
+    setbackground();
+    setState(() {});
+  }
+
+  String setbackground() {
+    if (result == '10EGP') {
+      background = 'assets/images/backgrounds/10EGP.png';
+    }
+    else if (result == '20EGP') {
+      background = 'assets/images/backgrounds/20EGP.png';
+    }
+    else if (result == '50EGP') {
+      background = 'assets/images/backgrounds/50EGP.png';
+    }
+    else if (result == '100EGP') {
+      background = 'assets/images/backgrounds/100EGP.png';
+    }
+    else if (result == '200EGP') {
+      background = 'assets/images/backgrounds/200EGP.png';
+    } else {
+      background = 'assets/images/backgrounds/50EGP.png';
+    }
+    return background;
+  }
+
+
+  @override
+  void initState(){
+    // TODO: implement initState
+    uploadImage();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<File>(
-        future: Future<File>.delayed(const Duration(seconds: 2), () => imageFile), // Replace this with your actual file loading process
+        future: Future<File>.delayed(const Duration(seconds: 2), () => widget.imageFile), // Replace this with your actual file loading process
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (result == null) {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (snapshot.hasError) {
+          }
+          else if (snapshot.hasError) {
             return const Center(
               child: Text('Error loading image'),
             );
-          } else if (snapshot.hasData) {
-            return Image.file(snapshot.data!);      //for editing image here <<
-          } else {
+          }
+          else if (result != null) {
+            return Center(
+              child: Stack(
+                children:[
+                  Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage(background), fit: BoxFit.cover),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 500, left: 20, right: 20),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Text('Currency : ',
+                                style: TextStyle(fontSize: 20)
+                            ),
+                            const Expanded(child: SizedBox()),
+                            Text(result.toString(),style: const TextStyle(fontSize: 20)),
+                          ],
+                        ),
+                        const Divider(),
+                        const Row(
+                          children: [
+
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                ],
+              ),
+            );
+          }
+          else {
             return const Center(
               child: Text('No image data'),
             );

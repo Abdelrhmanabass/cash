@@ -2,16 +2,35 @@
 class Assets {
   Assets._();
 
-  static const String audiosCashy = 'assets/audios/Cashy.mp4';
+  static const String femaleAR100AR = 'assets/audios/Female-AR/100-AR.mp3';
+  static const String femaleAR10AR = 'assets/audios/Female-AR/10-AR.mp3';
+  static const String femaleAR200AR = 'assets/audios/Female-AR/200-AR.mp3';
+  static const String femaleAR20AR = 'assets/audios/Female-AR/20-AR.mp3';
+  static const String femaleAR50AR = 'assets/audios/Female-AR/50-AR.mp3';
+  static const String femaleAR5AR = 'assets/audios/Female-AR/5-AR.mp3';
+  static const String femaleARIntroAR = 'assets/audios/Female-AR/intro-AR.mp3';
+  static const String femaleENFiftyEN = 'assets/audios/Female-EN/fifty-EN.mp3';
+  static const String femaleENFiveEN = 'assets/audios/Female-EN/five-EN.mp3';
+  static const String femaleENHeba = 'assets/audios/Female-EN/heba.mp4';
+  static const String femaleENHundredEN = 'assets/audios/Female-EN/hundred-EN.mp3';
+  static const String femaleENIntroEN = 'assets/audios/Female-EN/intro-EN.mp3';
+  static const String femaleENTenEN = 'assets/audios/Female-EN/ten-EN.mp3';
+  static const String femaleENTwentyEN = 'assets/audios/Female-EN/twenty-EN.mp3';
+  static const String femaleENTwoEN = 'assets/audios/Female-EN/two-EN.mp3';
+  static const String femaleFRIntroFR = 'assets/audios/Female-FR/intro-FR.m4a';
   static const String fontsBebasNeueRegular = 'assets/fonts/BebasNeue-Regular.ttf';
   static const String imagesHome = 'assets/images/Home.jpg';
   static const String imagesLogo = 'assets/images/logo.gif';
   static const String imagesLogoIcon = 'assets/images/logo_icon.gif';
+  static const String imagesManHair = 'assets/images/man-hair.png';
   static const String imagesMenu = 'assets/images/Menu.png';
-  static const String modelsBestInt8 = 'assets/models/best_int8.tflite';
-  static const String modelsCnn = 'assets/models/cnn.tflite';
-  static const String modelsIsaFINAL = 'assets/models/isaFINAL.txt';
-  static const String modelsLabels = 'assets/models/labels.txt';
-  static const String modelsYarb = 'assets/models/yarb.txt';
+  static const String imagesWoman = 'assets/images/woman.png';
+  static const String maleEN10_pounds = 'assets/audios/Male-EN/10 pounds.mp4';
+  static const String maleEN100_pounds = 'assets/audios/Male-EN/100 pounds.mp4';
+  static const String maleEN20_pounds = 'assets/audios/Male-EN/20 pounds.mp4';
+  static const String maleEN200_pounds = 'assets/audios/Male-EN/200 pounds.mp4';
+  static const String maleEN5_pounds = 'assets/audios/Male-EN/5 pounds.mp4';
+  static const String maleEN50_pounds = 'assets/audios/Male-EN/50 pounds.mp4';
+  static const String maleENCashyEn = 'assets/audios/Male-EN/Cashy-En.mp4';
 
 }

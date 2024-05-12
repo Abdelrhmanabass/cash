@@ -6,7 +6,7 @@ import 'dart:io';
 
 import '../../Screens/voice.dart';
 late File _image;
-List _predictions = [];
+
 final GoRouter router = GoRouter(routes: [
   GoRoute(
     path: "/",
@@ -20,7 +20,7 @@ final GoRouter router = GoRouter(routes: [
 
   GoRoute(
       path: "/result",
-      builder: (context, state) => result(_image,_predictions) ,
+      builder: (context, state) => result(_image) ,
   ),
 
   GoRoute(
