@@ -1,10 +1,10 @@
-import 'package:demo/Screens/result.dart';
+import 'package:demo/Presentation Layer/Screens/result.dart';
 import 'package:go_router/go_router.dart';
-import '../../Screens/splash.dart';
-import '../../Screens/hello.dart';
+import '../../Presentation Layer/Screens/splash.dart';
+import '../../Presentation Layer/Screens/hello.dart';
 import 'dart:io';
 
-import '../../Screens/voice.dart';
+import '../../Presentation Layer/Screens/voice.dart';
 late File _image;
 
 final GoRouter router = GoRouter(routes: [

@@ -39,15 +39,14 @@ dependencies:
   image_picker: ^1.0.5
   path: ^1.8.3
   audioplayers: ^5.2.1
-  tflite: ^1.1.2
   provider: ^6.1.2
   http: ^1.2.0
   avatar_glow: ^2.0.2
   speech_to_text: ^6.6.0
   shared_preferences: ^2.2.3
-
-
-
+  flutter_bloc: ^8.1.5
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +78,7 @@ flutter:
     - assets/audios/Female-FR/
     - assets/audios/Male-EN/
     - assets/images/backgrounds/
+    - assets/lang/
 
 
   #

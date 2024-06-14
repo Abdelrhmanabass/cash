@@ -44,12 +44,13 @@ class ImageWithProgressIndicator extends StatefulWidget {
 class _ImageWithProgressIndicatorState extends State<ImageWithProgressIndicator> {
   var result;
   late String background ;
+  var total =0;
 
   Future<void> uploadImage() async {
     var image = widget.imageFile;
     final request = http.MultipartRequest(
       "POST",
-      Uri.parse("https://c183-197-133-51-219.ngrok-free.app/upload"),
+      Uri.parse("https://e863-197-133-51-219.ngrok-free.app/upload"),
     );
 
     final headers = {"Content-type": "multipart/form-data"};
@@ -76,20 +77,26 @@ class _ImageWithProgressIndicatorState extends State<ImageWithProgressIndicator>
   String setbackground() {
     if (result == '10EGP') {
       background = 'assets/images/backgrounds/10EGP.png';
+      total = total + 10;
     }
     else if (result == '20EGP') {
       background = 'assets/images/backgrounds/20EGP.png';
+      total = total + 20;
     }
     else if (result == '50EGP') {
       background = 'assets/images/backgrounds/50EGP.png';
+      total = total + 50;
     }
     else if (result == '100EGP') {
       background = 'assets/images/backgrounds/100EGP.png';
+      total = total + 100;
     }
     else if (result == '200EGP') {
       background = 'assets/images/backgrounds/200EGP.png';
+      total = total + 200;
     } else {
       background = 'assets/images/backgrounds/50EGP.png';
+      total = total ;
     }
     return background;
   }
@@ -141,9 +148,13 @@ class _ImageWithProgressIndicatorState extends State<ImageWithProgressIndicator>
                           ],
                         ),
                         const Divider(),
-                        const Row(
+                        Row(
                           children: [
-
+                            const Text('Total : ',
+                                style: TextStyle(fontSize: 20)
+                            ),
+                            const Expanded(child: SizedBox()),
+                            Text(total.toString(),style: const TextStyle(fontSize: 20)),
                           ],
                         ),
                       ],

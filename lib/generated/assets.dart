@@ -2,6 +2,11 @@
 class Assets {
   Assets._();
 
+  static const String backgrounds100EGP = 'assets/images/backgrounds/100EGP.png';
+  static const String backgrounds10EGP = 'assets/images/backgrounds/10EGP.png';
+  static const String backgrounds200EGP = 'assets/images/backgrounds/200EGP.png';
+  static const String backgrounds20EGP = 'assets/images/backgrounds/20EGP.png';
+  static const String backgrounds50EGP = 'assets/images/backgrounds/50EGP.png';
   static const String femaleAR100AR = 'assets/audios/Female-AR/100-AR.mp3';
   static const String femaleAR10AR = 'assets/audios/Female-AR/10-AR.mp3';
   static const String femaleAR200AR = 'assets/audios/Female-AR/200-AR.mp3';
@@ -25,6 +30,8 @@ class Assets {
   static const String imagesManHair = 'assets/images/man-hair.png';
   static const String imagesMenu = 'assets/images/Menu.png';
   static const String imagesWoman = 'assets/images/woman.png';
+  static const String langAr = 'assets/lang/ar.json';
+  static const String langEn = 'assets/lang/en.json';
   static const String maleEN10_pounds = 'assets/audios/Male-EN/10 pounds.mp4';
   static const String maleEN100_pounds = 'assets/audios/Male-EN/100 pounds.mp4';
   static const String maleEN20_pounds = 'assets/audios/Male-EN/20 pounds.mp4';

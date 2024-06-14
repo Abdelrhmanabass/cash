@@ -1,27 +1,25 @@
-import 'package:demo/provider/SettingsProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../Business Logic Layer/settings_state_bloc.dart';
 
 class Setting extends StatefulWidget {
   const Setting({super.key});
-
   @override
   State<Setting> createState() => _SettingState();
 }
 
 class _SettingState extends State<Setting> {
 
-
+  String _selectedLanguage = 'en';
+  String _selectedGender= 'male';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Settings'),
         ),
-        body: Consumer<SettingsProvider>(
-          builder: (context, settingsProvider, child) {
-            return Stack(
+        body:
+             Stack(
               children: [
                 Container(
                   decoration: const BoxDecoration(
@@ -50,6 +48,7 @@ class _SettingState extends State<Setting> {
                       ],
                       borderRadius: const BorderRadius.all(Radius.circular(18)),
                     ),
+
                     child: Column(
                       children: [
                         Padding(
@@ -57,72 +56,69 @@ class _SettingState extends State<Setting> {
                           child: Column(
                             children: [
                               const Text(
-                                'Select an Gender :',
+                                'Apply Your Settings :',
                                 style: TextStyle(fontSize: 16),
                               ),
                               const SizedBox(height: 8),
-                              RadioListTile<String>(
-                                title: const Text('Female'),
-                                value: 'Female',
-                                autofocus: true,
-                                groupValue: Provider.of<SettingsProvider>(context).pickedGender,
-                                onChanged: (value) {
-                                  settingsProvider.savePreferences('Female', settingsProvider.pickedGender);
-                                },
-                              ),
-                              RadioListTile<String>(
-                                title: const Text('Male'),
-                                value: 'Male',
-                                groupValue: Provider.of<SettingsProvider>(context).pickedGender,
-                                onChanged: (value) {
-                                  settingsProvider.savePreferences('Male', settingsProvider.pickedGender);
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Divider(
-                          color: Colors.black,
-                          thickness: 1,
-                          endIndent: 10,
-                          indent: 10,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 30),
-                          child: Column(
-                            children: [
-                              const Text(
-                                'Select an Language :',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              const SizedBox(height: 8),
-                              RadioListTile<String>(
-                                title: const Text('Arabic'),
-                                value: 'Arabic',
-                                autofocus: true,
-                                groupValue: Provider.of<SettingsProvider>(context).pickedLanguage,
-                                onChanged: (value) {
-                                  settingsProvider.savePreferences('Arabic', settingsProvider.pickedLanguage);
-                                },
-                              ),
                               RadioListTile<String>(
                                 title: const Text('English'),
-                                value: 'English',
-                                groupValue: Provider.of<SettingsProvider>(context).pickedLanguage,
+                                value: 'en',
+                                autofocus: true,
+                                groupValue: _selectedLanguage,
                                 onChanged: (value) {
-                                  settingsProvider.savePreferences('English', settingsProvider.pickedLanguage);
+                                  setState(() {
+                                    _selectedLanguage = value!;
+                                  });
+                                   BlocProvider.of<SettingsStateBloc>(context).
+                                   add(EnglishLanguageEvent());
+                                }
+                              ),
+                              RadioListTile<String>(
+                                title: const Text('Arabic '),
+                                value: 'ar',
+                                groupValue: _selectedLanguage,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedLanguage = value!;
+                                });
+                                  BlocProvider.of<SettingsStateBloc>(context).
+                                  add(ArabicLanguageEvent());
+                                },
+                              ),
+                              RadioListTile<String>(
+                                title: const Text('Male Voice'),
+                                value: 'male',
+                                autofocus: true,
+                                groupValue: _selectedGender,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedGender = value!;
+                                  });
+                                  BlocProvider.of<SettingsStateBloc>(context).
+                                  add(MaleGenderEvent());
+                                },
+                              ),
+                              RadioListTile<String>(
+                                title: const Text('English & Female Voice'),
+                                value: 'female',
+                                groupValue: _selectedGender,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedGender = value!;
+                                  });
+                                  BlocProvider.of<SettingsStateBloc>(context).
+                                  add(FemaleGenderEvent());
                                 },
                               ),
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
                 ),
               ],
-            );
-          },
-        ));
+            ),
+        );
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../generated/assets.dart';
+import '../../generated/assets.dart';
 
 class MySplach extends StatefulWidget {
   const MySplach({super.key});

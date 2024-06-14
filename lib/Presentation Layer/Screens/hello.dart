@@ -1,13 +1,14 @@
 import 'dart:io';
-import 'package:demo/Screens/result.dart';
-import 'package:demo/Screens/voice.dart';
+import 'package:demo/Presentation Layer/Screens/result.dart';
+import 'package:demo/Presentation Layer/Screens/voice.dart';
+import 'package:demo/core/lang/applocalization.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
-import '../provider/SettingsProvider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+
+import '../../core/constants.dart';
 
 class Hello extends StatefulWidget {
   const Hello({super.key});
@@ -18,6 +19,7 @@ class Hello extends StatefulWidget {
 
 class _HelloState extends State<Hello> {
 
+  // Text Variables
   String maintext_EN = " Our CASHY Application will assist you in detecting ,"
       " identifying and counting your money ,"
       " it also tells you whether the currency is fake or not ."
@@ -25,17 +27,14 @@ class _HelloState extends State<Hello> {
 
   String maintext_AR = "سيساعدك تطبيق CASHY الخاص بنا في اكتشاف وتحديد وإحصاء أموالك، كما يخبرك ما إذا كانت العملة مزيفة أم لا. فقط افتح الكاميرا و قم بتصوير العمله , لفتح الكاميرا قول 'camera'.";
 
-
+  // Voice Variables
   final AudioPlayer player = AudioPlayer();
   File? _image;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var body;
 
-  late final getPickedGender =
-      Provider.of<SettingsProvider>(context, listen: false).pickedGender;
-  late final getPickedLanguage =
-      Provider.of<SettingsProvider>(context, listen: false).pickedLanguage;
 
+  // Speech to Text Variables
   SpeechToText speech = SpeechToText();
   var islestening = false;
   String speechtext = '';
@@ -44,9 +43,9 @@ class _HelloState extends State<Hello> {
   void initState() {
     super.initState();
     _initSpeech();
-    if (getPickedLanguage == 'English' && getPickedGender == 'Female') {
+    if (prefs!.getString('lang') == 'en' && prefs!.getString('gender') == 'female') {
       player.play(AssetSource('audios/Female-EN/intro-EN.mp3'));
-    } else if (getPickedLanguage == 'English' && getPickedGender == 'Male') {
+    } else if (prefs!.getString('lang') == 'en' && prefs!.getString('gender') == 'male') {
       player.play(AssetSource('audios/Male-EN/Cashy-En.mp4'));
     }
   }
@@ -237,7 +236,7 @@ class _HelloState extends State<Hello> {
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(15, 25, 15, 25),
                     child: Text(
-                      maintext_AR,
+                      AppLocalizations.of(context)!.translate('home_message'),
                       style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
