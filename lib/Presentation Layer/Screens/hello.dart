@@ -7,7 +7,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-
 import '../../core/constants.dart';
 
 class Hello extends StatefulWidget {
@@ -43,11 +42,24 @@ class _HelloState extends State<Hello> {
   void initState() {
     super.initState();
     _initSpeech();
-    if (prefs!.getString('lang') == 'en' && prefs!.getString('gender') == 'female') {
+    if (prefs!.getString('language') == 'en' && prefs!.getString('gender') == 'female')
+    {
       player.play(AssetSource('audios/Female-EN/intro-EN.mp3'));
-    } else if (prefs!.getString('lang') == 'en' && prefs!.getString('gender') == 'male') {
+    }
+    else if (prefs!.getString('language') == 'en' && prefs!.getString('gender') == 'male')
+    {
       player.play(AssetSource('audios/Male-EN/Cashy-En.mp4'));
     }
+    else if (prefs!.getString('language') == 'ar' && prefs!.getString('gender') == 'female')
+    {
+      player.play(AssetSource('audios/Female-AR/intro-AR.mp3'));
+    }
+    // else if (prefs!.getString('language') == 'ar' && prefs!.getString('gender') == 'male')
+    // {
+    //   player.play(AssetSource('audios/Male-AR/intro-AR.mp3'));
+    // }
+
+
   }
 
   /// This has to happen only once per app
@@ -118,9 +130,9 @@ class _HelloState extends State<Hello> {
             padding: const EdgeInsets.only(top: 200.0),
             child: ListView(
               children: [
-                const ListTile(
+                 ListTile(
                   leading: Icon(Icons.home),
-                  title: Text('Home'),
+                  title: Text(AppLocalizations.of(context)!.translate('home')),
                 ),
                 const Divider(
                   color: Colors.green, // Customize the color of the divider
@@ -129,8 +141,8 @@ class _HelloState extends State<Hello> {
                   endIndent: 40, // Adjust the thickness of the divider
                 ),
                 ListTile(
-                  leading: const Icon(Icons.mic),
-                  title: const Text(' Settings'),
+                  leading:  const Icon(Icons.mic),
+                  title: Text(AppLocalizations.of(context)!.translate('settings')),
                   onTap: () {
                     Navigator.push(
                         context,
@@ -144,9 +156,9 @@ class _HelloState extends State<Hello> {
                   indent: 40,
                   endIndent: 40, // Adjust the thickness of the divider
                 ),
-                const ListTile(
-                  leading: Icon(Icons.attach_money_rounded),
-                  title: Text('Fake Currency'),
+                 ListTile(
+                  leading: const Icon(Icons.attach_money_rounded),
+                  title: Text(AppLocalizations.of(context)!.translate('fake')),
                 ),
                 const Divider(
                   color: Colors.green, // Customize the color of the divider
@@ -254,8 +266,8 @@ class _HelloState extends State<Hello> {
                         player.stop();
                       },
                       backgroundColor: Colors.green,
-                      label: const Text(
-                        'Skip',
+                      label: Text(
+                        AppLocalizations.of(context)!.translate('skip_message'),
                         style: TextStyle(color: Colors.white),
                       ),
                       icon: const Icon(Icons.skip_next),
@@ -273,8 +285,8 @@ class _HelloState extends State<Hello> {
                             //uploadImage();
                           },
                           backgroundColor: Colors.green,
-                          label: const Text(
-                            'camera',
+                          label: Text(
+                            AppLocalizations.of(context)!.translate('camera_message'),
                             style: TextStyle(color: Colors.white),
                           ),
                           icon: const Icon(Icons.camera),
@@ -290,8 +302,8 @@ class _HelloState extends State<Hello> {
                             //uploadImage();
                           },
                           backgroundColor: Colors.green,
-                          label: const Text(
-                            'gallery',
+                          label: Text(
+                            AppLocalizations.of(context)!.translate('camera_message'),
                             style: TextStyle(color: Colors.white),
                           ),
                           icon: const Icon(Icons.browse_gallery),

@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import '../../core/constants.dart';
 
 class result extends StatefulWidget {
   late File _image;
@@ -45,12 +48,13 @@ class _ImageWithProgressIndicatorState extends State<ImageWithProgressIndicator>
   var result;
   late String background ;
   var total =0;
+  final AudioPlayer player = AudioPlayer();
 
   Future<void> uploadImage() async {
     var image = widget.imageFile;
     final request = http.MultipartRequest(
       "POST",
-      Uri.parse("https://e863-197-133-51-219.ngrok-free.app/upload"),
+      Uri.parse("https://bde4-197-133-63-110.ngrok-free.app/upload"),
     );
 
     final headers = {"Content-type": "multipart/form-data"};
@@ -71,6 +75,7 @@ class _ImageWithProgressIndicatorState extends State<ImageWithProgressIndicator>
     result = resJson;
     print(resJson);
     setbackground();
+    setVoice();
     setState(() {});
   }
 
@@ -94,13 +99,107 @@ class _ImageWithProgressIndicatorState extends State<ImageWithProgressIndicator>
     else if (result == '200EGP') {
       background = 'assets/images/backgrounds/200EGP.png';
       total = total + 200;
-    } else {
+    }
+    else {
       background = 'assets/images/backgrounds/50EGP.png';
       total = total ;
     }
     return background;
   }
 
+  void setVoice(){
+
+    if(prefs!.getString('language') == 'en') {
+
+        if(prefs!.getString('gender') == 'male') {
+
+            if (result == '100EGP') {
+              player.play(AssetSource('audios/Male-EN/100EGP.mp4'));
+            }
+            else if(result == '10EGP') {
+              player.play(AssetSource('audios/Male-EN/10EGP.mp4'));
+            }
+            else if(result == '5EGP') {
+              player.play(AssetSource('audios/Male-EN/5EGP.mp4'));
+            }
+            else if(result == '20EGP') {
+              player.play(AssetSource('audios/Male-EN/20EGP.mp4'));
+            }
+            else if(result == '50EGP') {
+              player.play(AssetSource('audios/Male-EN/50EGP.mp4'));
+            }
+            else if(result == '200EGP') {
+              player.play(AssetSource('audios/Male-EN/200EGP.mp4'));
+            }
+
+          }
+        else {
+          if (result == '100EGP') {
+            player.play(AssetSource('audios/Female-EN/100EGP.mp3'));
+          }
+          else if(result == '10EGP') {
+            player.play(AssetSource('audios/Female-EN/10EGP.mp3'));
+          }
+          else if(result == '5EGP') {
+            player.play(AssetSource('audios/Female-EN/5EGP.mp3'));
+          }
+          else if(result == '20EGP') {
+            player.play(AssetSource('audios/Female-EN/20EGP.mp3'));
+          }
+          else if(result == '50EGP') {
+            player.play(AssetSource('audios/Female-EN/50EGP.mp3'));
+          }
+          else if(result == '200EGP') {
+            player.play(AssetSource('audios/Female-EN/200EGP.mp3'));
+          }
+          }
+
+      }
+
+    else if (prefs!.getString('language') == 'ar') {
+
+        if(prefs!.getString('gender') == 'male') {
+          if (result == '100EGP') {
+            player.play(AssetSource('audios/Male-EN/100EGP.mp4'));
+          }
+          else if(result == '10EGP') {
+            player.play(AssetSource('audios/Male-EN/10EGP.mp4'));
+          }
+          else if(result == '5EGP') {
+            player.play(AssetSource('audios/Male-EN/5EGP.mp4'));
+          }
+          else if(result == '20EGP') {
+            player.play(AssetSource('audios/Male-EN/20EGP.mp4'));
+          }
+          else if(result == '50EGP') {
+            player.play(AssetSource('audios/Male-EN/50EGP.mp4'));
+          }
+          else if(result == '200EGP') {
+            player.play(AssetSource('audios/Male-EN/200EGP.mp4'));
+          }
+        }
+        else {
+          if (result == '100EGP') {
+            player.play(AssetSource('audios/Female-AR/100EGP.mp3'));
+          }
+          else if(result == '10EGP') {
+            player.play(AssetSource('audios/Female-AR/10EGP.mp3'));
+          }
+          else if(result == '5EGP') {
+            player.play(AssetSource('audios/Female-AR/5EGP.mp3'));
+          }
+          else if(result == '20EGP') {
+            player.play(AssetSource('audios/Female-AR/20EGP.mp3'));
+          }
+          else if(result == '50EGP') {
+            player.play(AssetSource('audios/Female-AR/50EGP.mp3'));
+          }
+          else if(result == '200EGP') {
+            player.play(AssetSource('audios/Female-AR/200EGP.mp3'));
+          }
+        }
+      }
+  }
 
   @override
   void initState(){
@@ -160,7 +259,6 @@ class _ImageWithProgressIndicatorState extends State<ImageWithProgressIndicator>
                       ],
                     ),
                   ),
-
                 ],
               ),
             );

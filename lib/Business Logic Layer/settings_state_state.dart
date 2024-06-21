@@ -6,16 +6,23 @@ abstract class SettingsStateState {}
 
 class SettingsStateInitial extends SettingsStateState {}
 
-class AppChangeLanguage extends SettingsStateState {
-  final String? language;
-  AppChangeLanguage({this.language});
+class SettingsLoaded extends SettingsStateState {
+  final String gender;
+  final String language;
+
+   SettingsLoaded({required this.gender, required this.language});
+
+  @override
+  List<Object> get props => [gender, language];
 }
 
-class AppChangeGender extends SettingsStateState {
-  final String? gender;
-  AppChangeGender({this.gender});
+class SettingsError extends SettingsStateState {
+  final String error;
 
+   SettingsError({required this.error});
+
+  @override
+  List<Object> get props => [error];
 }
-
 
 

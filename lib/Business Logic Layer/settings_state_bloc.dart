@@ -1,69 +1,35 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import '../core/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 part 'settings_state_event.dart';
 part 'settings_state_state.dart';
 
 class SettingsStateBloc extends Bloc<SettingsStateEvent, SettingsStateState> {
+  late SharedPreferences prefs;
   SettingsStateBloc() : super(SettingsStateInitial()) {
-    on<SettingsStateEvent>((event, emit) {
+    on<InitialSettingsStateEvent>(_onInitialSettingsStateEvent);
+    on<UpdateVoiceSettingsEvent>(_onUpdateVoiceSettingsEvent);
+  }
+  Future<void> _onInitialSettingsStateEvent(
+      InitialSettingsStateEvent event, Emitter<SettingsStateState> emit) async {
+    try {
+      prefs = await SharedPreferences.getInstance();
+      final gender = prefs.getString('gender') ?? 'male';
+      final language = prefs.getString('language') ?? 'en';
+      emit(SettingsLoaded(gender: gender, language: language));
+    } catch (e) {
+      emit(SettingsError(error: e.toString()));
+    }
+  }
 
-        if(event is InitialSettingsStateEvent){
-
-          if(prefs!.getString('lang') != null && prefs!.getString('gender') != null)
-          {
-            if(prefs!.getString('lang') == 'ar' && prefs!.getString('gender') == 'male'){
-              emit(AppChangeLanguage(language: 'ar'));
-              emit(AppChangeGender(gender: 'male'));
-            }
-
-            else if(prefs!.getString('lang') == 'ar' && prefs!.getString('gender') == 'female') {
-              emit(AppChangeLanguage(language: 'ar'));
-              emit(AppChangeGender(gender: 'female'));
-            }
-
-            else if(prefs!.getString('lang') == 'en' && prefs!.getString('gender') == 'male') {
-              emit(AppChangeLanguage(language: 'en'));
-              emit(AppChangeGender(gender: 'male'));
-            }
-
-            else if(prefs!.getString('lang') == 'en' && prefs!.getString('gender') == 'female') {
-              emit(AppChangeLanguage(language: 'en'));
-              emit(AppChangeGender(gender: 'female'));
-            }
-          }
-        }
-
-        else if (event is ArabicLanguageEvent && event is MaleGenderEvent) {
-          prefs!.setString('lang', 'ar');
-          prefs!.setString('gender', 'male');
-          emit(AppChangeLanguage(language: 'ar'));
-          emit(AppChangeGender(gender: 'male'));
-
-        }
-        else if (event is ArabicLanguageEvent && event is FemaleGenderEvent) {
-          prefs!.setString('lang', 'ar');
-          prefs!.setString('gender', 'female');
-          emit(AppChangeLanguage(language: 'ar'));
-          emit(AppChangeGender(gender: 'female'));
-
-        }
-
-        else if (event is EnglishLanguageEvent && event is MaleGenderEvent) {
-          prefs!.setString('lang', 'en');
-          prefs!.setString('gender', 'male');
-          emit(AppChangeLanguage(language: 'en'));
-          emit(AppChangeGender(gender: 'male'));
-
-        }
-        else if (event is EnglishLanguageEvent && event is FemaleGenderEvent) {
-          prefs!.setString('lang', 'en');
-          prefs!.setString('gender', 'female');
-          emit(AppChangeLanguage(language: 'en'));
-          emit(AppChangeGender(gender: 'female'));
-
-        }
-
-    });
+  Future<void> _onUpdateVoiceSettingsEvent(
+      UpdateVoiceSettingsEvent event, Emitter<SettingsStateState> emit) async {
+    try {
+      await prefs.setString('gender', event.gender);
+      await prefs.setString('language', event.language);
+      emit(SettingsLoaded(gender: event.gender, language: event.language));
+    } catch (e) {
+      emit(SettingsError(error: e.toString()));
+    }
   }
 }

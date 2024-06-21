@@ -3,10 +3,14 @@ part of 'settings_state_bloc.dart';
 @immutable
 abstract class SettingsStateEvent {}
 
- class InitialSettingsStateEvent extends SettingsStateEvent {}
+class InitialSettingsStateEvent extends SettingsStateEvent {}
 
- class ArabicLanguageEvent extends SettingsStateEvent {}
- class EnglishLanguageEvent extends SettingsStateEvent {}
+class UpdateVoiceSettingsEvent extends SettingsStateEvent {
+  final String gender;
+  final String language;
 
- class MaleGenderEvent extends SettingsStateEvent {}
- class FemaleGenderEvent extends SettingsStateEvent {}
+   UpdateVoiceSettingsEvent({required this.gender, required this.language});
+
+  @override
+  List<Object> get props => [gender, language];
+}

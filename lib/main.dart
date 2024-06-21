@@ -1,16 +1,17 @@
-import 'package:demo/Business%20Logic%20Layer/settings_state_bloc.dart';
-import 'package:demo/core/constants.dart';
-import 'package:flutter/material.dart';
+  import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'core/constants.dart';
 import 'core/lang/applocalization.dart';
 import 'core/routes/app_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'Business Logic Layer/settings_state_bloc.dart';
 
-main() async {
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  prefs = await SharedPreferences.getInstance();
-  runApp(E3rfly());
+   prefs = await SharedPreferences.getInstance();
+  runApp(const E3rfly());
 }
 
 class E3rfly extends StatefulWidget {
@@ -27,25 +28,29 @@ class _E3rflyState extends State<E3rfly> {
       create: (context) => SettingsStateBloc()..add(InitialSettingsStateEvent()),
       child: BlocBuilder<SettingsStateBloc, SettingsStateState>(
         builder: (context, state) {
-          if (state is AppChangeLanguage ){
-            String locale = state.language!;
+
+          if (state is SettingsLoaded) {
             return MaterialApp.router(
-              locale: Locale(locale),
+              locale: Locale(state.language),
+              title: 'E3rfly',
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+              ),
               supportedLocales: const [
                 Locale('en'),
                 Locale('ar'),
               ],
-              localizationsDelegates: [
+              localizationsDelegates:  [
                 AppLocalizations.delegate,
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
               ],
-              localeResolutionCallback: (devicelocale, supportedLocales) {
-                for (var locale in supportedLocales) {
-                  if (devicelocale != null) {
-                    if (devicelocale.languageCode == locale.languageCode) {
-                      return devicelocale;
+              localeResolutionCallback: (deviceLocale, supportedLocales) {
+                if (deviceLocale != null) {
+                  for (var locale in supportedLocales) {
+                    if (deviceLocale.languageCode == locale.languageCode) {
+                      return locale;
                     }
                   }
                 }
@@ -55,34 +60,20 @@ class _E3rflyState extends State<E3rfly> {
               routerConfig: router,
             );
           }
-          return MaterialApp.router(
-            // navigatorKey:NavigationService.navigatorKey,
-            supportedLocales: const [
-              Locale('en'),
-              Locale('ar'),
-            ],
-            localizationsDelegates: [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            localeResolutionCallback: (devicelocale, supportedLocales) {
-              for (var locale in supportedLocales) {
-                if (devicelocale != null) {
-                  if (devicelocale.languageCode == locale.languageCode) {
-                    return devicelocale;
-                  }
-                }
-              }
-              return supportedLocales.first;
-            },
-            debugShowCheckedModeBanner: false,
-            routerConfig: router,
+          else if (state is SettingsError) {
+            return MaterialApp(
+              home: Scaffold(
+                body: Center(child: Text('Error: ${state.error}')),
+              ),
+            );
+          }
+          return MaterialApp(
+            home: Scaffold(
+              body: const Center(child: CircularProgressIndicator()),
+            ),
           );
         },
       ),
     );
   }
 }
-
