@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:image_picker/image_picker.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import '../../core/constants.dart';
 
 class result extends StatefulWidget {
@@ -21,7 +23,66 @@ class result extends StatefulWidget {
 class _resultState extends State<result> {
 
   bool loading= true;
+  SpeechToText speech = SpeechToText();
+  var islestening = false;
+  String speechtext = '';
+  final AudioPlayer player = AudioPlayer();
+  File? _image;
 
+  /// This has to happen only once per app
+  void _initSpeech() async {
+    islestening = false;
+    await speech.initialize();
+    setState(() {});
+  }
+
+  /// Each time to start a speech recognition session
+  void _startListening() async {
+    await speech.listen(onResult: (SpeechRecognitionResult result) {
+      setState(() {
+        speechtext = result.recognizedWords;
+        print(speechtext);
+        if (speechtext.toLowerCase() == 'camera') {
+          pickImage(ImageSource.camera);
+        } else if (speechtext.toLowerCase() == 'gallery') {
+          pickImage(ImageSource.gallery);
+        } else {
+          print('Not Recognized');
+        }
+      });
+    });
+    setState(() {});
+  }
+
+  void _stopListening() async {
+    islestening = false;
+    await speech.stop();
+    setState(() {});
+  }
+
+  Future<void> pickImage(ImageSource type) async {
+    final image = await ImagePicker().pickImage(source: type);
+    setState(() {
+      _image = File(image!.path);
+    });
+    if (image != null) {
+
+    } else {
+      print('No image selected.');
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initSpeech();
+  }
+
+  void dispose() {
+    player.dispose();
+    super.dispose();
+  }
   @override
 
   Widget build(BuildContext context) {
@@ -29,8 +90,24 @@ class _resultState extends State<result> {
       appBar: AppBar(
         title: const Text('Result'),
       ),
-      body: Center(
-          child: ImageWithProgressIndicator(imageFile: widget._image)
+      body: GestureDetector(
+        onTapDown: (details) async {
+          if (!islestening) {
+            var available = await speech.initialize();
+            if (available) {
+              setState(() {
+                islestening = true;
+                _startListening();
+              });
+            }
+          }
+        },
+        onTapUp: (details) {
+          _stopListening();
+        },
+        child: Center(
+            child: ImageWithProgressIndicator(imageFile: widget._image)
+        ),
       ),
     );
   }
@@ -50,8 +127,9 @@ class _ImageWithProgressIndicatorState extends State<ImageWithProgressIndicator>
   var total =0;
   final AudioPlayer player = AudioPlayer();
 
-  Future<void> uploadImage() async {
-    var image = widget.imageFile;
+
+  Future<void> uploadImage({File? imagefile}) async {
+    var image = imagefile??widget.imageFile;
     final request = http.MultipartRequest(
       "POST",
       Uri.parse("https://bde4-197-133-63-110.ngrok-free.app/upload"),
